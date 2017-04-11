@@ -6,22 +6,27 @@ window.onload = function() {
 		forecastContainer = document.getElementById('forecast'),
 		weatherLocation = document.getElementById('location');
 
+	//Autcomplete script is executed on keyup
 	cityInput.onkeyup = function() {
 		var cityValue = this.value;
+		//Only run autocomplete request when more than 2 characters are typed
 		if(cityValue.length > 2) {
-
 			var xhr = new XMLHttpRequest();
 			xhr.open('GET', 'http://api.apixu.com/v1/search.json?key=d6aa19a05ffa47aea5f190826171004&q='+cityValue);
 			xhr.onload = function() {
 			    if (xhr.status === 200) {
 			    	var cities = JSON.parse(xhr.responseText);
+
+			    	//Reset previous list
 			    	autocomplete.innerHTML = '';
+
+			    	//Append the cities to the HTML
 			    	for (var i = 0; i < cities.length; i++) {
 			    		autocomplete.innerHTML += '<li class="city-item" data-lat="'+cities[i].lat+'" data-lon="'+cities[i].lon+'">'+cities[i].country+', '+cities[i].name+'</li>';
 			    	}
 
+			    	//Attach a click event to the newly generated list of cities
 			    	var autocompleteItems = document.getElementsByClassName('city-item');
-
 					for (var i = 0; i < autocompleteItems.length; i++) {
 						autocompleteItems[i].onclick = function() {
 							showWeatherElements();
@@ -58,6 +63,8 @@ window.onload = function() {
 		    	var location = weather.location.country+', '+weather.location.name;
 		    	weatherLocation.innerHTML = location;
 		    	var weatherIcon = weather.current.condition.icon;
+
+		    	//Set the icon for todays weather forecast
 		    	weatherToday.innerHTML ='<img src="http:'+weather.current.condition.icon+'">';
 
 		    	var d = new Date();
@@ -72,6 +79,7 @@ window.onload = function() {
 					weekday[5] = "Friday";
 					weekday[6] = "Saturday";
 
+				//Generate the HTML for the forecast for the next 4 days (start i at 1 to skip today)
 		    	var forecast = weather.forecast.forecastday;
 		    	for (var i = 1; i < forecast.length; i++) {
 		    		var forecastWeatherIcon = forecast[i].day.condition.icon;
@@ -86,22 +94,25 @@ window.onload = function() {
 	}
 
 	function showWeatherElements() {
+		//Show the HTML elements that contain the weather
 		var hiddenFields = document.getElementsByClassName('weather-overview');
   		for (var i = 0; i < hiddenFields.length; i++) {
   			hiddenFields[i].style.display = 'block';
   		}
 	}
 
+	//Request acces to geoLocation via the browser, if this fails or is not accepted, provide an input field for the location
 	function getGeoLocation() {
 		var geoSuccess = function(position) {
+			//Execute the getWeather function
 			console.log('Succes');
 			showWeatherElements();
 			var lat = position.coords.latitude;
 			var lon = position.coords.longitude;
 			getWeather(lat, lon);
-			startTimer();
 		};
 	  	var geoError = function(error) {
+			//Provide an input field with autocomplete to get the location
 	  		console.log('Fail');
 			console.log(error);
 	  		//Show hidden fields
@@ -113,10 +124,7 @@ window.onload = function() {
 	  	navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 	};
 
-	function startTimer() {
-		//Refresh function every 10 minutes in case user keeps browserwindow open
-		setInterval(getGeoLocation, 600000);
-	}
-
 	getGeoLocation();
+	//Refresh function every 10 minutes in case user keeps browserwindow open
+	setInterval(getGeoLocation, 15000);
 }
