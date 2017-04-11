@@ -1,9 +1,16 @@
 window.onload = function() {
 
-	//Return list of cities
-	var cityInput = document.getElementById('city');
+	var cityInput = document.getElementById('city'),
+		autocomplete = document.getElementById('autocomplete'),
+		weatherToday = document.getElementById('weather-today'),
+		forecastContainer = document.getElementById('forecast'),
+		weatherLocation = document.getElementById('location');
 
-	var autocomplete = document.getElementById('autocomplete');
+	function resetAllInput() {
+		autocomplete.innerHTML = '';
+		cityInput.value = '';
+		forecastContainer.innerHTML = '';
+	}
 
 	cityInput.onkeyup = function() {
 		var cityValue = this.value;
@@ -20,18 +27,18 @@ window.onload = function() {
 			    	}
 
 			    	var autocompleteItems = document.getElementsByClassName('city-item');
+
 					for (var i = 0; i < autocompleteItems.length; i++) {
 						autocompleteItems[i].onclick = function() {
-							autocomplete.innerHTML = '';
-							cityInput.value = '';
+							resetAllInput();
 							var lat = this.getAttribute("data-lat");
 							var lon = this.getAttribute("data-lon");
 							getWeather(lat, lon);
 						}
 					}
-
 			    }
 			    else {
+			    	console.log("Different xhr.status:");
 			    	console.log(xhr.status);
 			    }
 			};
@@ -41,15 +48,35 @@ window.onload = function() {
 
 	function getWeather(lat, long) {
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://api.apixu.com/v1/current.json?key=d6aa19a05ffa47aea5f190826171004&q='+lat+','+long);
+		xhr.open('GET', 'http://api.apixu.com/v1/forecast.json?key=d6aa19a05ffa47aea5f190826171004&days=5&q='+lat+','+long);
 		xhr.onload = function() {
 		    if (xhr.status === 200) {
+		    	resetAllInput();
 		    	var weather = JSON.parse(xhr.responseText);
+
+		    	var location = weather.location.country+', '+weather.location.name
+		    	weatherLocation.innerHTML = location;
 		    	console.log(weather);
 		    	var weatherIcon = weather.current.condition.icon;
-		    	console.log(weatherIcon);
-		    	var imageContainer = document.getElementById('weather-icon');
-		    	imageContainer.innerHTML ='<img src="http:'+weather.current.condition.icon+'">';
+		    	weatherToday.innerHTML ='<img src="http:'+weather.current.condition.icon+'">';
+
+		    	var d = new Date();
+				var today = d.getDay();
+
+				var weekday = new Array(7);
+					weekday[0] =  "Sunday";
+					weekday[1] = "Monday";
+					weekday[2] = "Tuesday";
+					weekday[3] = "Wednesday";
+					weekday[4] = "Thursday";
+					weekday[5] = "Friday";
+					weekday[6] = "Saturday";
+
+		    	var forecast = weather.forecast.forecastday;
+		    	for (var i = 1; i < forecast.length; i++) {
+		    		var forecastWeatherIcon = forecast[i].day.condition.icon;
+		    		forecastContainer.innerHTML += '<li><h4>'+weekday[today+i]+'</h4><img src="http:'+forecastWeatherIcon+'"></li>'
+		    	}
 		    }
 		    else {
 		    	console.log(xhr.status);
@@ -67,20 +94,13 @@ window.onload = function() {
 			startTimer();
 		};
 	  	var geoError = function(error) {
+	  		console.log('Fail');
+			console.log(error);
 	  		//Show hidden fields
 	  		var hiddenFields = document.getElementsByClassName('hide');
 	  		for (var i = 0; i < hiddenFields.length; i++) {
 	  			hiddenFields[i].style.display = 'block';
 	  		}
-
-			console.log('Fail');
-			console.log(error);
-			switch(error.code) {
-				case error.TIMEOUT:
-				// The user didn't accept the callout
-				console.log('User did not accept callout');
-				break;
-			}
 		};
 	  	navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 	};
