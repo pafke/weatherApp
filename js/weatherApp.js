@@ -1,16 +1,10 @@
 window.onload = function() {
-
+	"use strict";
 	var cityInput = document.getElementById('city'),
 		autocomplete = document.getElementById('autocomplete'),
 		weatherToday = document.getElementById('weather-today'),
 		forecastContainer = document.getElementById('forecast'),
 		weatherLocation = document.getElementById('location');
-
-	function resetAllInput() {
-		autocomplete.innerHTML = '';
-		cityInput.value = '';
-		forecastContainer.innerHTML = '';
-	}
 
 	cityInput.onkeyup = function() {
 		var cityValue = this.value;
@@ -30,6 +24,7 @@ window.onload = function() {
 
 					for (var i = 0; i < autocompleteItems.length; i++) {
 						autocompleteItems[i].onclick = function() {
+							showWeatherElements();
 							resetAllInput();
 							var lat = this.getAttribute("data-lat");
 							var lon = this.getAttribute("data-lon");
@@ -46,6 +41,12 @@ window.onload = function() {
 		}
 	}
 
+	function resetAllInput() {
+		autocomplete.innerHTML = '';
+		cityInput.value = '';
+		forecastContainer.innerHTML = '';
+	}
+
 	function getWeather(lat, long) {
 		var xhr = new XMLHttpRequest();
 		xhr.open('GET', 'http://api.apixu.com/v1/forecast.json?key=d6aa19a05ffa47aea5f190826171004&days=5&q='+lat+','+long);
@@ -54,9 +55,8 @@ window.onload = function() {
 		    	resetAllInput();
 		    	var weather = JSON.parse(xhr.responseText);
 
-		    	var location = weather.location.country+', '+weather.location.name
+		    	var location = weather.location.country+', '+weather.location.name;
 		    	weatherLocation.innerHTML = location;
-		    	console.log(weather);
 		    	var weatherIcon = weather.current.condition.icon;
 		    	weatherToday.innerHTML ='<img src="http:'+weather.current.condition.icon+'">';
 
@@ -75,7 +75,7 @@ window.onload = function() {
 		    	var forecast = weather.forecast.forecastday;
 		    	for (var i = 1; i < forecast.length; i++) {
 		    		var forecastWeatherIcon = forecast[i].day.condition.icon;
-		    		forecastContainer.innerHTML += '<li><h4>'+weekday[today+i]+'</h4><img src="http:'+forecastWeatherIcon+'"></li>'
+		    		forecastContainer.innerHTML += '<li><img src="http:'+forecastWeatherIcon+'"><h4>'+weekday[today+i]+'</h4></li>'
 		    	}
 		    }
 		    else {
@@ -85,9 +85,17 @@ window.onload = function() {
 		xhr.send();
 	}
 
+	function showWeatherElements() {
+		var hiddenFields = document.getElementsByClassName('weather-overview');
+  		for (var i = 0; i < hiddenFields.length; i++) {
+  			hiddenFields[i].style.display = 'block';
+  		}
+	}
+
 	function getGeoLocation() {
 		var geoSuccess = function(position) {
 			console.log('Succes');
+			showWeatherElements();
 			var lat = position.coords.latitude;
 			var lon = position.coords.longitude;
 			getWeather(lat, lon);
@@ -97,7 +105,7 @@ window.onload = function() {
 	  		console.log('Fail');
 			console.log(error);
 	  		//Show hidden fields
-	  		var hiddenFields = document.getElementsByClassName('hide');
+	  		var hiddenFields = document.getElementsByClassName('location-input');
 	  		for (var i = 0; i < hiddenFields.length; i++) {
 	  			hiddenFields[i].style.display = 'block';
 	  		}
@@ -111,5 +119,4 @@ window.onload = function() {
 	}
 
 	getGeoLocation();
-
 }

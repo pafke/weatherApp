@@ -8,19 +8,21 @@
 	<link rel="stylesheet" type="text/css" href="css/style.css" />
 </head>
 <body>
-	<div class="hide">
-		<input type="text" id="city">
-		<ul  id="autocomplete">
+	<div class="location-input">
+		<h2>Location</h2>
+		<input type="text" id="city" placeholder="Type your location...">
+		<ul id="autocomplete" class="cities">
 		</ul>
 	</div>
 
-	<h2 id="location"></h2>
-	<h3>Today</h3>
-	<div id="weather-today">
+	<div class="weather-overview">
+		<h2 id="location"></h2>
+		<h3>Today</h3>
+		<div id="weather-today">
+		</div>
+		<h3>Forecast</h3>
+		<ul id="forecast" class="weekdays">
+		</ul>
 	</div>
-	<h3>Forecast</h3>
-	<ul id="forecast">
-
-	</ul>
 </body>
 </html>

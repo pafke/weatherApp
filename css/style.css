@@ -1,3 +1,16 @@
-.hide {
+.location-input, .weather-overview {
 	display: none;
+}
+ul {
+	padding: 0;
+}
+.cities li:hover {
+	background: grey;
+	cursor: pointer;
+}
+.weekdays li {
+	list-style: none;
+	float: left;
+	margin-right: 20px;
+	text-align: center;
 }
