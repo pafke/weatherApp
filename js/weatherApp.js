@@ -67,7 +67,11 @@ window.onload = function() {
 			startTimer();
 		};
 	  	var geoError = function(error) {
-	  		//Input veld tonen
+	  		//Show hidden fields
+	  		var hiddenFields = document.getElementsByClassName('hide');
+	  		for (var i = 0; i < hiddenFields.length; i++) {
+	  			hiddenFields[i].style.display = 'block';
+	  		}
 
 			console.log('Fail');
 			console.log(error);
@@ -86,6 +90,6 @@ window.onload = function() {
 		setInterval(getGeoLocation, 600000);
 	}
 
-	//getGeoLocation();
+	getGeoLocation();
 
 }
