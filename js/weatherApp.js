@@ -1,4 +1,4 @@
-window.onload = function(){
+window.onload = function() {
 
 	function getWeather(lat, long) {
 		var xhr = new XMLHttpRequest();
@@ -19,16 +19,17 @@ window.onload = function(){
 		xhr.send();
 	}
 
-	var button = document.getElementById("getPosition");
-
-	button.onclick = function() {
+	function getGeoLocation() {
 		var geoSuccess = function(position) {
 			console.log('Succes');
 			var lat = position.coords.latitude;
 			var long = position.coords.longitude;
 			getWeather(lat, long);
+			startTimer();
 		};
 	  	var geoError = function(error) {
+	  		//Input veld tonen
+
 			console.log('Fail');
 			console.log(error);
 			switch(error.code) {
@@ -38,7 +39,14 @@ window.onload = function(){
 				break;
 			}
 		};
-
 	  	navigator.geolocation.getCurrentPosition(geoSuccess, geoError);
 	};
+
+	function startTimer() {
+		//Refresh function every 10 minutes in case user keeps browserwindow open
+		setInterval(getGeoLocation, 600000);
+	}
+
+	getGeoLocation();
+
 }
