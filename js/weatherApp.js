@@ -12,7 +12,7 @@ window.onload = function() {
 		//Only run autocomplete request when more than 2 characters are typed
 		if(cityValue.length > 2) {
 			var xhr = new XMLHttpRequest();
-			xhr.open('GET', 'http://api.apixu.com/v1/search.json?key=d6aa19a05ffa47aea5f190826171004&q='+cityValue);
+			xhr.open('GET', 'http://api.apixu.com/v1/search.json?key=97102d191d9748a09f7192148171104   &q='+cityValue);
 			xhr.onload = function() {
 			    if (xhr.status === 200) {
 			    	var cities = JSON.parse(xhr.responseText);
@@ -54,7 +54,7 @@ window.onload = function() {
 
 	function getWeather(lat, long) {
 		var xhr = new XMLHttpRequest();
-		xhr.open('GET', 'http://api.apixu.com/v1/forecast.json?key=d6aa19a05ffa47aea5f190826171004&days=5&q='+lat+','+long);
+		xhr.open('GET', 'http://api.apixu.com/v1/forecast.json?key=97102d191d9748a09f7192148171104   &days=5&q='+lat+','+long);
 		xhr.onload = function() {
 		    if (xhr.status === 200) {
 		    	resetAllInput();
@@ -125,6 +125,6 @@ window.onload = function() {
 	};
 
 	getGeoLocation();
-	//Refresh function every 10 minutes in case user keeps browserwindow open
-	setInterval(getGeoLocation, 15000);
+	//Refresh function every 10 minutes in case user keeps browserwindow open (or in case of display functionality)
+	setInterval(getGeoLocation, 600000);
 }
