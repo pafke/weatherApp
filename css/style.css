@@ -4,6 +4,13 @@
 ul {
 	padding: 0;
 }
+.cities {
+	position: absolute;
+	background: rgba(200,200,200,.95);
+}
+.cities li {
+	padding: 2px 5px;
+}
 .cities li:hover {
 	background: grey;
 	cursor: pointer;
