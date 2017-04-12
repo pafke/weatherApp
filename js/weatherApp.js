@@ -82,8 +82,12 @@ window.onload = function() {
 				//Generate the HTML for the forecast for the next 4 days (start i at 1 to skip today)
 		    	var forecast = weather.forecast.forecastday;
 		    	for (var i = 1; i < forecast.length; i++) {
+		    		var day = today+i;
+		    		if(day > 6) {
+		    			day = day - 7;
+		    		}
 		    		var forecastWeatherIcon = forecast[i].day.condition.icon;
-		    		forecastContainer.innerHTML += '<li><img src="http:'+forecastWeatherIcon+'"><h4>'+weekday[today+i]+'</h4></li>'
+		    		forecastContainer.innerHTML += '<li><img src="http:'+forecastWeatherIcon+'"><h4>'+weekday[day]+'</h4></li>'
 		    	}
 		    }
 		    else {
